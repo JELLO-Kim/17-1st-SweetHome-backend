@@ -76,24 +76,24 @@
 
 <br>
 
-## BackEnd (공통&맡은 부분 : ✔️)
+## BackEnd (공통&맡은 부분 : ✅)
 
 **공통**
-- ✔️ modeling
-- ✔️ db_uploader작성 & CSV 파일 생성(백업용)
+- ✅ modeling
+- ✅ db_uploader작성 & CSV 파일 생성(백업용)
 
 **user app**
 - 회원가입 로직
 - 로그인 로직
 - 비밀번호 암호화, 토큰 발행
 - 회원 유효성 판단(login_decorator 작성)
-- ✔️ 비회원용 login_decorator (non_user_accept_decorator)작성
+- ✅ 비회원용 login_decorator (non_user_accept_decorator)작성
 
 **posting app**
-- ✔️ 상품 조건별 정렬 & filtering
-- ✔️ 회원유저와 posting간의 `좋아요` 기능 구현
+- ✅ 상품 조건별 정렬 & filtering
+- ✅ 회원유저와 posting간의 `좋아요` 기능 구현
 - 회원유저와 posting간의 `스크랩` 기능 구현
-- ✔️ 회원 유저가 로그인 했을 경우 `좋아요`, `스크랩` 상태 반영하여 게시물 데이터 전송
+- ✅ 회원 유저가 로그인 했을 경우 `좋아요`, `스크랩` 상태 반영하여 게시물 데이터 전송
 
 **product app**
 - 카테고리별 상품 나열
@@ -109,7 +109,7 @@
 <br>
 <br>
 
-# ✔️ 기능 구현 상세 ✔️
+# ✅ 기능 구현 상세 ✅
 
 ## 1. modeling
 기존의 `오늘의집`사이트에서는 수많은 조건들로 `정렬`과 `필터링`이 가능합니다. 이러한 부분을 살리기 위해 조건으로 잡힐 것들은 모두 `정규화` 하였습니다.
