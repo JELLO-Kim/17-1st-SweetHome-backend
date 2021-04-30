@@ -179,7 +179,7 @@
 - AqueryTool을 활용한 modeling
 - db_uploader작성 & CSV 파일 생성
 - 비회원용 login_decorator (non_user_accept_decorator)작성
-- query parameter를 통해 상품 조건별 정렬 & filtering 구현
+- query parameter를 통해 상품 조건별 정렬 & filtering 가능한 게시물 list API 구현
 - 회원유저와 posting간의 `좋아요`, `스크랩` API 구현
 - 회원 유저가 로그인 했을 경우 `좋아요`, `스크랩` 상태 반영하여 게시물 데이터 전송
 
