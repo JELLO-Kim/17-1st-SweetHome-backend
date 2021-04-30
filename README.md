@@ -28,23 +28,16 @@
 <br>
 
 # 🛠 기술 스택
-## FrontEnd 기술 스택
-- React
-- React Router
-- Sass
-- Restful API
-- Git
 
 <br>
 
-## BackEnd 기술 스택
-- Django
-- Python
-- MySQL
-- Bcrypt, JWT
-- AQueryTool
-- Git & GitHub
-- AWS EC2, RDS
+- Languae : Python 3
+- Framework : Django
+- Database : MySQL
+- Modeling : AQueryTool
+- 인증, 인가 : Bcrypt, JWT
+- 형상관리 : Git
+- AWS : EC2, RDS
 
 <br>
 <br>
