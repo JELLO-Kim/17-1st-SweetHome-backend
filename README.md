@@ -10,21 +10,12 @@
 <br>
 
 ## ⛑ team members
-### 🔜 FrontEnd
-- 곽진석
-- 김민주
-- 김종진 (PM)
-
-<br>
-
-### 🔙 BackEnd
-- **김채현**
-- 박재현
-- 이준하
-- 조수아
+프론트엔드 3명
+백엔드 4명
 
 <br>
 <br>
+
 
 # 🌈 프로젝트 소개
 > **오늘의 집?** <br> 오늘의 집은 누구나 쉽고 재미있게 자신의 공간을 만들어가는 문화가 널리 퍼지기를 꿈꾸는 소셜 커머스 사이트입니다. 1000만 회원이 이용하고 있는 원스톱 인테리어 플랫폼으로서 다양한 인테리어 콘텐츠와 개인 맞춤형 커머스 기능을 제공하고 있습니다. 탐색, 발견, 구매까지. 인테리어의 모든 과정을 한 곳에서 경험할 수 있도록 돕습니다.
@@ -58,59 +49,148 @@
 <br>
 <br>
 
+# project 구조
+```python
+.
+├── __pycache__
+│   └── my_settings.cpython-39.pyc
+├── csv_data
+│   ├── categories.csv
+│   ├── delivery_fees.csv
+│   ├── delivery_periods.csv
+│   ├── delivery_types.csv
+│   ├── detail_categories.csv
+│   ├── order_products.csv
+│   ├── order_statuses.csv
+│   ├── orders.csv
+│   ├── posting_comments.csv
+│   ├── posting_housings.csv
+│   ├── posting_likes.csv
+│   ├── posting_scraps.csv
+│   ├── posting_sizes.csv
+│   ├── posting_spaces.csv
+│   ├── posting_styles.csv
+│   ├── postings.csv
+│   ├── product_colors.csv
+│   ├── product_companies.csv
+│   ├── product_deliveries.csv
+│   ├── product_images.csv
+│   ├── product_options.csv
+│   ├── product_reviews.csv
+│   ├── product_sizes.csv
+│   ├── products.csv
+│   ├── review_likes.csv
+│   ├── sub_categories.csv
+│   └── users.csv
+├── db_uploader.py
+├── manage.py
+├── my_settings.py
+├── order
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-39.pyc
+│   │   ├── models.cpython-39.pyc
+│   │   ├── urls.cpython-39.pyc
+│   │   └── views.cpython-39.pyc
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations
+│   │   ├── 0001_initial.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── 0001_initial.cpython-39.pyc
+│   │       └── __init__.cpython-39.pyc
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── posting
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-39.pyc
+│   │   ├── models.cpython-39.pyc
+│   │   ├── tests.cpython-39.pyc
+│   │   ├── urls.cpython-39.pyc
+│   │   └── views.cpython-39.pyc
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations
+│   │   ├── 0001_initial.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── 0001_initial.cpython-39.pyc
+│   │       └── __init__.cpython-39.pyc
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── product
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-39.pyc
+│   │   ├── models.cpython-39.pyc
+│   │   ├── urls.cpython-39.pyc
+│   │   └── views.cpython-39.pyc
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations
+│   │   ├── 0001_initial.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── 0001_initial.cpython-39.pyc
+│   │       └── __init__.cpython-39.pyc
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── pull_request_template.md
+├── requirements.txt
+├── sweethome
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-39.pyc
+│   │   ├── settings.cpython-39.pyc
+│   │   ├── urls.cpython-39.pyc
+│   │   └── wsgi.cpython-39.pyc
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── user
+    ├── __init__.py
+    ├── __pycache__
+    │   ├── __init__.cpython-39.pyc
+    │   ├── models.cpython-39.pyc
+    │   ├── urls.cpython-39.pyc
+    │   ├── utils.cpython-39.pyc
+    │   └── views.cpython-39.pyc
+    ├── admin.py
+    ├── apps.py
+    ├── migrations
+    │   ├── 0001_initial.py
+    │   ├── 0002_auto_20210226_0356.py
+    │   ├── __init__.py
+    │   └── __pycache__
+    │       ├── 0001_initial.cpython-39.pyc
+    │       ├── 0002_auto_20210226_0356.cpython-39.pyc
+    │       └── __init__.cpython-39.pyc
+    ├── models.py
+    ├── tests.py
+    ├── urls.py
+    ├── utils.py
+    └── views.py
+```
+
 # 👩🏻‍💻 구현 기능
 
-## FrontEnd
-- access token를 활용한 회원가입, 로그인 기능
-- 공용 Navbar / Foooter 레이아웃 구현
-- 메인 페이지 레이아웃 구현
-- QueryString을 활용한 메인 페이지 피드 필터링 기능
-- 상품 페이지 레아아웃 구현
-- 가격순, 리뷰순 등 ordering 기능
-- 동적 라우팅을 활용한 특정 상품의 페이지로 이동 기능
-- 상품 디테일 페이지 레이아웃 구현
-- 해당 상품 리뷰 리스트 레이아웃 구현
-- 리뷰 쓰기 기능
-- 장바구니에 주문 상품 담기 기능
-- 장바구니 레이아웃 구현
-- 장바구니 주문 상품 수량 변경 및 결제 요청
+- AqueryTool을 활용한 modeling
+- db_uploader작성 & CSV 파일 생성
+- 비회원용 login_decorator (non_user_accept_decorator)작성
+- query parameter를 통해 상품 조건별 정렬 & filtering 구현
+- 회원유저와 posting간의 `좋아요`, `스크랩` API 구현
+- 회원 유저가 로그인 했을 경우 `좋아요`, `스크랩` 상태 반영하여 게시물 데이터 전송
 
-<br>
-
-## BackEnd (공통&맡은 부분 : ✅)
-
-**공통**
-- ✅ modeling
-- ✅ db_uploader작성 & CSV 파일 생성(백업용)
-
-**user app**
-- 회원가입 로직
-- 로그인 로직
-- 비밀번호 암호화, 토큰 발행
-- 회원 유효성 판단(login_decorator 작성)
-- ✅ 비회원용 login_decorator (non_user_accept_decorator)작성
-
-**posting app**
-- ✅ 상품 조건별 정렬 & filtering
-- ✅ 회원유저와 posting간의 `좋아요` 기능 구현
-- 회원유저와 posting간의 `스크랩` 기능 구현
-- ✅ 회원 유저가 로그인 했을 경우 `좋아요`, `스크랩` 상태 반영하여 게시물 데이터 전송
-
-**product app**
-- 카테고리별 상품 나열
-- 상품 조건별 정렬 & filtering
-- 상품 상세페이지 조회
-- 상품 리뷰 조회(조건별 정렬)
-
-**order app**
-- 장바구니에 상품 담기
-- 장바구니 내역 조회
-- 장바구니 수량 변경 및 이에 대한 조회
-
-<br>
-<br>
-
-# ✅ 기능 구현 상세 ✅
+# ✅ 기능 구현 상세
 
 ## 1. modeling
 기존의 `오늘의집`사이트에서는 수많은 조건들로 `정렬`과 `필터링`이 가능합니다. 이러한 부분을 살리기 위해 조건으로 잡힐 것들은 모두 `정규화` 하였습니다.
