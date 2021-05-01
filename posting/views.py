@@ -5,7 +5,7 @@ from django.views           import View
 from django.db.models       import Count
 
 from user.models    import User
-from user.utils     import login_decorator, non_user_accept_decorator
+from utils     import login_decorator, non_user_accept_decorator
 from posting.models import (
         Posting,
         PostingSize,
@@ -20,15 +20,26 @@ from posting.models import (
 class PostingView(View):
     @non_user_accept_decorator
     def get(self, request):
+        """ [Posting] 메인페이지 : 게시글 list
+        Args:
+            - order_request : query parameter로 들어올 "정렬"조건이 들어있는 dict 형식. 값이 들어오지 않을 경우 기본으로 "최신순"으로 정렬되도록 함.
+        User:
+            - 비회원일 경우 "request.user"에 None을 담는 decorator 작성 (non_user_accept_decorator)
+        Returns: 
+            - posting_list : 조건에 맞는 posting list 반환
+        """
+
         user            = request.user
         postings        = Posting.objects.prefetch_related('comment').select_related('user').all()
         order_request   = request.GET.get('order', 'recent')
+
+        # 좋아요, 댓글, 스크랩 순으로 정렬하기 위해 해당 값을 "count"메소드를 사용해 계산하고 query를 annotate 한다.
         postings        = postings.annotate(
                             like_num=Count("postinglike"),
                             comment_num=Count("comment"),
                             scrap_num=Count("postingscrap")
                             )
-        
+        # 정렬 조건 고정 : 좋아요 많은 순 / 댓글 많은 순 / 스크랩 많은 순 / 최신순 / 오래된순
         order_prefixes = {
                 "best"      : "-like_num",
                 "popular"   : "-comment_num",
@@ -36,20 +47,25 @@ class PostingView(View):
                 "recent"    : "-created_at",
                 "old"       : "created_at"
                 }
-
+        
+        # filtering 조건 : 주거형태 / 공간형태 / 평수 / 스타일
         filter_prefixes = {
                 'housing'    : 'housing_id__in',
                 'space'      : 'space_id__in',
                 'size'       : 'size_id__in',
                 'style'      : 'style_id__in'
                 }
+
+        # request.GET 으로 "filter_prefixes"에 있는 key와 그에 대한 값이 존재할 경우 해당 로직 수행 / id로 받은 값들
         filter_set = {
                 filter_prefixes.get(key) : value for (key, value) in dict(request.GET).items() 
                 if filter_prefixes.get(key)
                 }
 
+        # 결정된 정렬조건과 filtering 조건에 맞게 Posting 객체들을 변수에 담는다.
         postings = postings.filter(**filter_set).order_by(order_prefixes[order_request])
         
+        # posting_list 변수에 Posting 객체 각각을 담는다.
         posting_list = [{
                 "id"                        : posting.id,
                 "card_user_image"           : posting.user.image_url,
@@ -59,10 +75,17 @@ class PostingView(View):
                 "card_content"              : posting.content,
                 "like_status"               : posting.postinglike_set.filter(user=user).exists(),
                 "scrap_status"              : posting.postingscrap_set.filter(user=user).exists(),
-                "comment_num"               : posting.comment.filter(posting_id=posting.id).count(),
-                "comment_user_image"        : posting.comment.all()[0].user.image_url if posting.comment.exists() else None,
-                "comment_user_name"         : posting.comment.all()[0].user.name if posting.comment.exists() else None,
-                "comment_content"           : posting.comment.all()[0].content if posting.comment.exists() else None,
+                "comments" : {
+                    "comment_num"               : posting.comment.count(),
+                    "comment_user_image"        : posting.comment.first().user.image_url,
+                    "comment_user_name"         : posting.comment.first().user.name,
+                    "comment_content"           : posting.comment.first().content
+                    } if posting.comment.exists() else {
+                        "comment_num"               : 0,
+                        "comment_user_image"        : None,
+                        "comment_user_name"         : None,
+                        "comment_content"           : None
+                    },
                 "like_num"                  : posting.postinglike_set.filter(posting_id=posting.id).count(),
                 "scrap_num"                 : posting.postingscrap_set.filter(posting_id=posting.id).count(),
                 "created_at"                : posting.created_at
@@ -72,6 +95,20 @@ class PostingView(View):
 
     @login_decorator
     def post(self, request):
+        """ [Posting] 메인페이지 : 게시글 업로드
+        Args:
+            - size : 평수
+            - housing : 주거형태
+            - style : 스타일
+            - space : 공간형태
+            - card_image : 업로드 사진 주소
+            - card_content : 게시물 작성 내용
+        User:
+            - 회원만 허용하도록 한다 (login_decorator)
+        Returns: 
+            - 200: {'message' : 'SUCCESS'}
+            - 400: 필수 parameter중 하나라도 들어오지 않았을 경우
+        """
         try:
             user        = request.user
             data        = json.loads(request.body)
@@ -98,6 +135,14 @@ class PostingView(View):
 
 class CategoryView(View):
     def get(self, request):
+        """ [Posting] 메인페이지 : 카테고리, filtering 조건 list
+        Returns: 
+            - category_condition : 정렬조건과 filtering 조건 목록 반환
+        Note:
+            - 정렬 조건에 대한 값은 db에 저장된 형태가 없어 코드상에서 제작함
+            - filtering조건들이 각각 정규화 되어 있기 때문에 코드상에서 직접 id를 지정해줌
+        """
+        # 정렬 조건에 대한 값
         sortings    = [
                 {"id" : 1, "name" : "역대인기순", "Ename" : "best"},
                 {"id" : 2, "name" : "댓글많은순", "Ename" : "popular"},
@@ -106,6 +151,7 @@ class CategoryView(View):
                 {"id" : 5, "name" : "오래된순", "Ename" : "old"}
         ]
         
+        # 정렬조건과 filtering 조건을 하나의 table에 작성된 값 처럼 id를 지정해줌.
         category_condition = {
                 "categories" : [
                     {
@@ -144,30 +190,50 @@ class CategoryView(View):
 class PostingLikeView(View):
     @login_decorator
     def post(self, request):
+        """ [Posting] 메인페이지 : 게시글 좋아요 기능
+        Args:
+            - user : header에 담긴 user의 토큰으로부터 user 정보 판단 (login_decorator)
+            - posting_id : body에 담겨져서 들어온 posting의 id
+        Returns: 
+            - 201: 기존에 user가 해당 게시물을 "좋아요" 하지 않은 상태일 경우 유저와 게시글 간의 "좋아요" 관계 생성
+            - 204: 기존에 user가 해당 게시물을 이미 "좋아요" 한 상태일 경우 기존의 "좋아요"상태를 삭제 (hard_delete)
+            - 400: body에 담겨온 id값을 지닌 posting이 없을 경우 에러 반환
+        """
         user        = request.user
         data        = json.loads(request.body)
         posting_id  = data['posting_id']
-
-        posting = Posting.objects.prefetch_related('postinglike_set').get(id=posting_id)
-
-        if posting.like_user.filter(id=user.id):
+        if not PostingLike.objects.get(posting_id=posting_id):
+            return JsonResponse({'message' : '존재하지 않는 posting 입니다'}, status=400)
+        
+        if PostingLike.objects.filter(user_id=user.id, posting_id=posting_id):
             PostingLike.objects.filter(user_id=user.id, posting_id=posting_id).delete()
-            return JsonResponse({'message' : 'SUCCESS'}, status=204)
-
-        posting.like_user.add(User.objects.get(id=user.id))
-        return JsonResponse({'message' : 'SUCCESS'}, status=201)
+            return JsonResponse({'message' : '게시물 좋아요 취소'}, status=204)
+        
+        PostingLike.objects.create(user_id=user.id, posting_id=posting_id)
+        return JsonResponse({'message' : '게시물 좋아요 완료'}, status=201)
 
 class PostingScrapView(View):
     @login_decorator
     def post(self, request):
+        """ [Posting] 메인페이지 : 게시글 스크랩 기능
+        Args:
+            - user : header에 담긴 user의 토큰으로부터 user 정보 판단 (login_decorator)
+            - posting_id : body에 담겨져서 들어온 posting의 id
+        Returns: 
+            - 201: 기존에 user가 해당 게시물을 "스크랩" 하지 않은 상태일 경우 유저와 게시글 간의 "스크랩" 관계 생성
+            - 204: 기존에 user가 해당 게시물을 이미 "스크랩" 한 상태일 경우 기존의 "스크랩"상태를 삭제 (hard_delete)
+            - 400: body에 담겨온 id값을 지닌 posting이 없을 경우 에러 반환
+        """
         data       = json.loads(request.body)
         user       = request.user
         posting_id = data['posting_id']
 
+        if not PostingScrap.objects.get(posting_id=posting_id):
+            return JsonResponse({'message' : '존재하지 않는 posting 입니다'}, status=400)
+
         if PostingScrap.objects.filter(user_id=user.id, posting_id=posting_id):
             PostingScrap.objects.filter(user_id=user.id, posting_id=posting_id).delete()
-            return JsonResponse({'message' : 'SUCCESS'}, status=204)
+            return JsonResponse({'message' : '게시물 스크랩 취소'}, status=204)
 
         PostingScrap.objects.create(user_id=user.id, posting_id=posting_id)
-        return JsonResponse({'message' : 'SUCCESS'}, status=201)
-
+        return JsonResponse({'message' : '게시물 스크랩 완료'}, status=201)
