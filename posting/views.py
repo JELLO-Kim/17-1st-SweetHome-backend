@@ -106,18 +106,32 @@ class PostingView(View):
         User:
             - 회원만 허용하도록 한다 (login_decorator)
         Returns: 
-            - 200: {'message' : 'SUCCESS'}
+            - 200: {'message' : '게시물이 업로드 되었습니다'}
             - 400: 필수 parameter중 하나라도 들어오지 않았을 경우
         """
         try:
             user        = request.user
             data        = json.loads(request.body)
-            size_id     = data['size']
-            housing_id  = data['housing']
-            style_id    = data['style']
-            space_id    = data['space']
-            image_url   = data['card_image']
-            content     = data['card_content']
+            size_id     = data.get('size', None)
+            housing_id  = data.get('housing', None)
+            style_id    = data.get('style', None)
+            space_id    = data.get('space', None)
+            image_url   = data.get('card_image', None)
+            content     = data.get('card_content', None)
+
+            # 필수 parameter validation
+            if not size_id:
+                return JsonResponse({'message' : '평수를 선택해 주세요'}, status=400)
+            if not housing_id:
+                return JsonResponse({'message' : '주거 형태를 선택해 주세요'}, status=400)
+            if not style_id:
+                return JsonResponse({'message' : '스타일을 선택해 주세요'}, status=400)
+            if not space_id:
+                return JsonResponse({'message' : '공간 형태를 선택해 주세요'}, status=400)
+            if not image_url:
+                return JsonResponse({'message' : '이미지를 업로드 해주세요'}, status=400)
+            if not content:
+                return JsonResponse({'message' : '게시글 내용을 입력해 주세요'}, status=400)
 
             Posting.objects.create(
                     user_id     = user.id, 
@@ -128,7 +142,7 @@ class PostingView(View):
                     style_id    = style_id, 
                     space_id    = space_id
                     )
-            return JsonResponse({'message' : 'SUCCESS'}, status=201)
+            return JsonResponse({'message' : '게시물이 업로드 되었습니다'}, status=201)
 
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
@@ -201,8 +215,9 @@ class PostingLikeView(View):
         """
         user        = request.user
         data        = json.loads(request.body)
+        print("data???????????", data)
         posting_id  = data['posting_id']
-        if not PostingLike.objects.get(posting_id=posting_id):
+        if not Posting.objects.get(id=posting_id):
             return JsonResponse({'message' : '존재하지 않는 posting 입니다'}, status=400)
         
         if PostingLike.objects.filter(user_id=user.id, posting_id=posting_id):

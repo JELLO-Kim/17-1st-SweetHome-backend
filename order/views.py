@@ -17,7 +17,10 @@ class OrderProductView(View):
         Args:
             - user: 회원 유효성 검사를 통해 token으로 부터 user 정보를 받는다.
         Returns: 
-            - result : 로그인 user의 장바구니 목록 반환
+            - 200: {'result' : 로그인 user의 장바구니 목록 반환}
+            - 200: {'message' : '장바구니에 담긴 상품 없음'}
+            - 400 (DoesNotExists): 가져와야 할 객체가 없는 경우
+            - 500 (Multiple~~~): get으로 가져온 객체의 갯수가 2개 이상일 경우-server error
         """
         try:
             user = request.user
@@ -49,9 +52,6 @@ class OrderProductView(View):
         except json.decoder.JSONDecodeError:
             return JsonResponse({'message':'JSON_DECODE_ERROR'}, status=400)
         
-        except KeyError:
-            return JsonResponse({'message':'KEY_ERROR'}, status=400)
-        
         except DataError:
             return JsonResponse({'message':'DATA_ERROR'}, status=400)
         
@@ -59,13 +59,13 @@ class OrderProductView(View):
             return JsonResponse({'message':'INVALID_ORDER'}, status=400)
         
         except Order.MultipleObjectsReturned:
-            return JsonResponse({'message':'MULTIPLE_ORDER_ERROR'}, status=400)
+            return JsonResponse({'message':'MULTIPLE_ORDER_ERROR'}, status=500)
         
         except OrderProduct.DoesNotExist:
             return JsonResponse({'message':'INVALID_ORDER_PRODUCT'}, status=400)
 
         except OrderProduct.MultipleObjectsReturned:
-            return JsonResponse({'message':'MULTIPLE_ORDER_PRODUCT_ERROR'}, status=400)
+            return JsonResponse({'message':'MULTIPLE_ORDER_PRODUCT_ERROR'}, status=500)
 
     @login_decorator
     def post(self, request):
@@ -134,7 +134,7 @@ class OrderProductView(View):
             return JsonResponse({'message':'MULTIPLE_ORDER_ERROR'}, status=400)
         
         except OrderProduct.DoesNotExist:
-            return JsonResponse({'message':'INVALID_ORDER_PRODUCT'}, status=400)
+            return JsonResponse({'message':'존재하지 않는 상품 옵션입니다'}, status=400)
 
         except OrderProduct.MultipleObjectsReturned:
             return JsonResponse({'message':'MULTIPLE_ORDER_PRODUCT_ERROR'}, status=400)

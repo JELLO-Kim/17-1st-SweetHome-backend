@@ -38,11 +38,11 @@ class SignupView(View):
 
             if len(password) < MINIMUM_PASSWORD_LENGTH:
                 return JsonResponse({'message' : '비밀번호가 너무 짧습니다'}, status = 400)
-            if email not in data:
+            if 'email' not in data:
                 return JsonResponse({'message' : '이메일을 입력해주세요'}, status = 400)
-            if password not in data:
+            if 'password' not in data:
                 return JsonResponse({'message' : '비밀번호를 입력해주세요'}, status = 400)
-            if name not in data:
+            if 'name' not in data:
                 return JsonRespone({'message' : '닉네임을 입력해주세요'}, status = 400)
             if len(name) < MINIMUM_NAME_LENGTH and len(name) > MAXIMUN_NAME_LENGTH:
                 return JsonResponse({'message' : '닉네임 길이를 맞춰주세요'}, status = 400)

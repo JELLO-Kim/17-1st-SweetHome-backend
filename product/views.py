@@ -174,14 +174,17 @@ class ProductReviewView(View):
             - like: 
         Returns: 
             - 200: {'result': 상품의 리뷰정보}
+            - 200 (리뷰가 없는 상품일 경우): {'results' : '리뷰가 존재하지 않는 상품입니다'}
             - 404: 유효하지 않은 상품 id로 접근했을 경우
         Note:
             - Q(): 리뷰를 별점별로 확인할때 여러 조건 선택 가능 / Q()를 사용해 or 조건으로 SQL문의 WHERE 구문 지정 + product_id도 Q()로 함께 처리해주었다.
         """
-        if not Product.objects.get(id=product_id).exists():
+        if not Product.objects.get(id=product_id):
             return JsonResponse({'message':'존재하지 않는 상품입니다'}, status=404)
 
         product   = Product.objects.get(id=product_id)
+        if not product.productreview_set.all():
+            return JsonResponse({'results' : '리뷰가 존재하지 않는 상품입니다'}, status=200)
         order     = request.GET.get('order', 'recent')
         rate_list = request.GET.getlist('rate', None)
 
@@ -238,26 +241,19 @@ class ReviewLikeView(View):
         try:
             user      = request.user
             data      = json.loads(request.body)
-            review_id = data.get('review_id')
+            review_id = data['review_id']
 
-            if not ProductReview.objects.filter(id=review_id).exists():
-                return JsonResponse({'message':'존재하지 않는 상품입니다'}, status=404)
-
-            if not ProductReview.objects.get(id=review_id).exists():
+            if not ProductReview.objects.get(id=review_id):
                 return JsonResponse({'message':'존재하지 않는 리뷰입니다'}, status=404)
-
             product_review = ProductReview.objects.get(id=review_id)
-            
             if user.productreview_set.filter(id=review_id).exists():
                 return JsonResponse({'message':'회원님이 직접 작성한 리뷰입니다'}, status=400)
-            
             # get_or_create 활용
             '''
             get 조건: 이미 유저가 해당 리뷰를 "좋아요" 했을 경우 해당되는 row 를 가져온다 => review_like 라는 변수에 해당 데이터 담음
             create 조건: "좋아요" 관계 기록이 없어 이에 대한 새로운 row가 생성된다. => create 라는 변수에 생성된 row 담음
             '''
             review_like, created = ReviewLike.objects.get_or_create(review=product_review, user=user)
-
             # get이었을 경우 두번째의 기능은 "삭제" 처리이다.
             if not created:
                 review_like.delete()
@@ -280,14 +276,14 @@ class ProductCartView(View):
             - id: 선택된 상품의 id값
             - quantity: 선택된 상품-옵션 의 수량
         Returns: 
-            - 201: {'message': '장바구니에 추가되었습니다'}
+            - 201 (신규 내역 추가): {'message': '장바구니에 새로 추가되었습니다'}
+            - 201 (기존 내역에서 갯수 추가): {'message':'기존 장바구니 내역에서 갯수가 추가되었습니다'}
             - 400: validation 부적합 (상품, 색상, 사이즈, 상품-옵션 조합, 수량)
         Note:
             - update_or_create: 이미 존재하는 장바구니 옵션이라면 수량만 update, 그게 아니라면 새로 생성한다
         """
         try:
-            user = request.user
-
+            user       = request.user
             data       = json.loads(request.body)
             product_id = data['id']
 
@@ -295,20 +291,20 @@ class ProductCartView(View):
             if not Product.objects.filter(id=product_id).exists():
                 return JsonResponse({'message':'존재하지 않는 상품입니다'}, status=404)
             # 상품 옵션 validation
-            if color not in data:
+            if 'color' not in data:
                 return JsonResponse({'message' : '색상을 선택해 주세요'}, status=400)
-            if size not in data:
+            if 'size' not in data:
                 return JsonResponse({'message' : '사이즈를 선택해 주세요'}, status=400)
             # 색상 옵션과 사이즈 옵션 key validation 통과 후
             color = ProductColor.objects.get(name=data['color'])
             size  = ProductSize.objects.get(name=data['size'])
             # 상품-옵션 조합 validation
             if not ProductOption.objects.filter(
-                product=product,color=color, size=size
+                product_id=product_id,color=color, size=size
             ).exists():
                 return JsonResponse({'message':'유효하지 않는 상품 옵션입니다'}, status=404)
             # 상품-옵션 수량 validation
-            if quantity not in data:
+            if 'quantity' not in data:
                 return JsonResponse({'message' : '수량을 선택해주세요'}, status=400)
 
             quantity = int(data['quantity'])
@@ -322,13 +318,14 @@ class ProductCartView(View):
                 # 기존에 있는 상품-옵션 항목에 수량이 추가된 경우라면 수량만 추가해서 저장한다
                 order_product.quantity+=quantity
                 order_product.save()
+                return JsonResponse({'message':'기존 장바구니 내역에서 갯수가 추가되었습니다'}, status=201)
             # 새로 생성되는 장바구니 목록일 경우 create
             else:
                 OrderProduct.objects.create(
                     order=order, product_option=product_option, quantity=quantity
                 )
             
-            return JsonResponse({'message':'장바구니에 추가되었습니다'}, status=201)
+            return JsonResponse({'message':'장바구니에 새로 추가되었습니다'}, status=201)
 
         except json.decoder.JSONDecodeError:
             return JsonResponse({'message':'JSON_DECODE_ERROR'}, status=400)
