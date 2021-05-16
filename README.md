@@ -47,136 +47,73 @@
 .
 ├── __pycache__
 │   └── my_settings.cpython-39.pyc
-├── csv_data
-│   ├── categories.csv
-│   ├── delivery_fees.csv
-│   ├── delivery_periods.csv
-│   ├── delivery_types.csv
-│   ├── detail_categories.csv
-│   ├── order_products.csv
-│   ├── order_statuses.csv
-│   ├── orders.csv
-│   ├── posting_comments.csv
-│   ├── posting_housings.csv
-│   ├── posting_likes.csv
-│   ├── posting_scraps.csv
-│   ├── posting_sizes.csv
-│   ├── posting_spaces.csv
-│   ├── posting_styles.csv
-│   ├── postings.csv
-│   ├── product_colors.csv
-│   ├── product_companies.csv
-│   ├── product_deliveries.csv
-│   ├── product_images.csv
-│   ├── product_options.csv
-│   ├── product_reviews.csv
-│   ├── product_sizes.csv
-│   ├── products.csv
-│   ├── review_likes.csv
-│   ├── sub_categories.csv
-│   └── users.csv
-├── db_uploader.py
 ├── manage.py
 ├── my_settings.py
 ├── order
 │   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── __init__.cpython-39.pyc
-│   │   ├── models.cpython-39.pyc
-│   │   ├── urls.cpython-39.pyc
-│   │   └── views.cpython-39.pyc
 │   ├── admin.py
 │   ├── apps.py
 │   ├── migrations
-│   │   ├── 0001_initial.py
 │   │   ├── __init__.py
-│   │   └── __pycache__
-│   │       ├── 0001_initial.cpython-39.pyc
-│   │       └── __init__.cpython-39.pyc
 │   ├── models.py
 │   ├── tests.py
 │   ├── urls.py
 │   └── views.py
 ├── posting
 │   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── __init__.cpython-39.pyc
-│   │   ├── models.cpython-39.pyc
-│   │   ├── tests.cpython-39.pyc
-│   │   ├── urls.cpython-39.pyc
-│   │   └── views.cpython-39.pyc
 │   ├── admin.py
 │   ├── apps.py
 │   ├── migrations
-│   │   ├── 0001_initial.py
 │   │   ├── __init__.py
-│   │   └── __pycache__
-│   │       ├── 0001_initial.cpython-39.pyc
-│   │       └── __init__.cpython-39.pyc
 │   ├── models.py
 │   ├── tests.py
 │   ├── urls.py
 │   └── views.py
 ├── product
 │   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── __init__.cpython-39.pyc
-│   │   ├── models.cpython-39.pyc
-│   │   ├── urls.cpython-39.pyc
-│   │   └── views.cpython-39.pyc
 │   ├── admin.py
 │   ├── apps.py
 │   ├── migrations
-│   │   ├── 0001_initial.py
 │   │   ├── __init__.py
-│   │   └── __pycache__
-│   │       ├── 0001_initial.cpython-39.pyc
-│   │       └── __init__.cpython-39.pyc
 │   ├── models.py
 │   ├── tests.py
 │   ├── urls.py
 │   └── views.py
-├── pull_request_template.md
 ├── requirements.txt
 ├── sweethome
 │   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── __init__.cpython-39.pyc
-│   │   ├── settings.cpython-39.pyc
-│   │   ├── urls.cpython-39.pyc
-│   │   └── wsgi.cpython-39.pyc
 │   ├── asgi.py
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
 └── user
     ├── __init__.py
-    ├── __pycache__
-    │   ├── __init__.cpython-39.pyc
-    │   ├── models.cpython-39.pyc
-    │   ├── urls.cpython-39.pyc
-    │   ├── utils.cpython-39.pyc
-    │   └── views.cpython-39.pyc
     ├── admin.py
     ├── apps.py
     ├── migrations
-    │   ├── 0001_initial.py
-    │   ├── 0002_auto_20210226_0356.py
     │   ├── __init__.py
-    │   └── __pycache__
-    │       ├── 0001_initial.cpython-39.pyc
-    │       ├── 0002_auto_20210226_0356.cpython-39.pyc
-    │       └── __init__.cpython-39.pyc
     ├── models.py
     ├── tests.py
     ├── urls.py
     ├── utils.py
     └── views.py
 ```
+<br>
+
+# Modeling
+![스위트홈erd](https://user-images.githubusercontent.com/71021769/116781164-2e29d880-aabc-11eb-875c-b7e1066ca543.png)
+
+<br>
+
+# API document
+https://documenter.getpostman.com/view/14808954/TzRLmAjS
+
+<br>
 
 # 👩🏻‍💻 구현 기능
 
 - AqueryTool을 활용한 modeling
+- Postman을 활용한 API document 제작
 - db_uploader작성 & CSV 파일 생성
 - 비회원용 login_decorator (non_user_accept_decorator)작성
 - query parameter를 통해 상품 조건별 정렬 & filtering 가능한 게시물 list API 구현
@@ -212,4 +149,3 @@ Query parameter를 사용해 정렬과 filtering 조건에 대한 적절한 data
 - 이 프로젝트는 <a href="https://ohou.se/store?utm_source=brand_google&utm_medium=cpc&utm_campaign=commerce&utm_content=e&utm_term=%EC%98%A4%EB%8A%98%EC%9D%98%EC%A7%91&source=14&affect_type=UtmUrl&gclid=Cj0KCQiAvvKBBhCXARIsACTePW-OH_Ghcoi3Hc5h91keYYbu6vNnk21lW688iQLrykOVE4ARC9_uxKQaAj6UEALw_wcB">오늘의 집</a> 사이트를 참조하여 학습목적으로 만들었습니다.
 - 실무수준의 프로젝트이지만 학습용으로 만들었기 때문에 이 코드를 활용하여 이득을 취하거나 무단 배포할 경우 법적으로 문제될 수 있습니다.
 - 이 프로젝트에서 사용하고 있는 사진 대부분은 위코드에서 구매한 것이므로 해당 프로젝트 외부인이 사용할 수 없습니다.
-
